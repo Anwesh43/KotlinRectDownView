@@ -66,7 +66,7 @@ class RectDownMoverView(ctx : Context, var text : String) : View(ctx) {
             }
         }
     }
-    data class ContainerState(var n : Int, var j : Int = 0, var dir : Int = 0) {
+    data class ContainerState(var n : Int, var j : Int = 0, var dir : Int = 1) {
         fun incrementCounter() {
             j += dir
             if(j == n || j == -1) {
@@ -84,7 +84,7 @@ class RectDownMoverView(ctx : Context, var text : String) : View(ctx) {
             paint.color = colors[i % colors.size]
             canvas.drawRect(RectF(-size/2 , - size/2 , size/2, size/2), paint)
             paint.color = Color.WHITE
-            paint.textSize = size/10
+            paint.textSize = size/3
             val tw = paint.measureText(text)
             canvas.drawText(text, -tw/2, size/30, paint)
             canvas.restore()
@@ -110,10 +110,13 @@ class RectDownMoverView(ctx : Context, var text : String) : View(ctx) {
         }
         fun draw(canvas : Canvas, paint : Paint) {
             var i = state.j
+            canvas.save()
+            canvas.translate(w/2, h/5)
             while(i >= 0) {
                 rectDowns.at(i)?.draw(canvas, paint)
                 i--
             }
+            canvas.restore()
         }
         fun startUpdating(startcb : () -> Unit) {
             rectDowns.at(state.j)?.startUpdating(startcb)
