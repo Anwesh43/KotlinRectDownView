@@ -6,6 +6,8 @@ package ui.anwesome.com.rectdownmoverview
 import android.content.*
 import android.graphics.*
 import android.view.*
+import java.util.concurrent.ConcurrentLinkedQueue
+
 val colors:Array<Int> = arrayOf(Color.parseColor("#009688"), Color.parseColor("#00BCD4"), Color.parseColor("#c62828"), Color.parseColor("#7B1FA2"))
 class RectDownMoverView(ctx : Context) : View(ctx) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -27,6 +29,7 @@ class RectDownMoverView(ctx : Context) : View(ctx) {
                 scale = prevScale + dir
                 dir = 0f
                 prevScale = scale
+                stopcb(scale)
             }
         }
         fun startUpdating(startcb : () -> Unit) {
@@ -91,4 +94,46 @@ class RectDownMoverView(ctx : Context) : View(ctx) {
             state.startUpdating(startcb)
         }
     }
+    data class RectDownContainer(var text : String, var w : Float, var h : Float) {
+        val rectDowns : ConcurrentLinkedQueue<RectDown> = ConcurrentLinkedQueue()
+        val state = ContainerState(text.split(" ").size)
+        init {
+            val textParts = text.split(" ")
+            if(textParts.size > 0) {
+                var size = h / (2 * textParts.size)
+                for (i in 0..textParts.size - 1) {
+                    rectDowns.add(RectDown(i, textParts[i], size))
+                }
+            }
+        }
+        fun draw(canvas : Canvas, paint : Paint) {
+            var i = 0
+            rectDowns.forEach {
+                it.draw(canvas, paint)
+                i++
+                if(i > state.j) {
+                    return
+                }
+            }
+        }
+        fun startUpdating(startcb : () -> Unit) {
+            rectDowns.at(state.j)?.startUpdating(startcb)
+        }
+        fun update(stopcb : (Float) -> Unit) {
+            rectDowns.at(state.j)?.update {
+                state.incrementCounter()
+                stopcb(it)
+            }
+        }
+    }
+}
+fun ConcurrentLinkedQueue<RectDownMoverView.RectDown>.at(index : Int) : RectDownMoverView.RectDown? {
+    var i = 0
+    forEach {
+        if(i == index) {
+            return it
+        }
+        i++
+    }
+    return null
 }
