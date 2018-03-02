@@ -60,4 +60,13 @@ class RectDownMoverView(ctx : Context) : View(ctx) {
             }
         }
     }
+    data class ContainerState(var n : Int, var j : Int = 0, var dir : Int = 0) {
+        fun incrementCounter() {
+            j += dir
+            if(j == n || j == -1) {
+                j -= dir
+                dir *= -1
+            }
+        }
+    }
 }
