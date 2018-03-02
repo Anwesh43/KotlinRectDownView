@@ -9,7 +9,7 @@ import android.view.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
 val colors:Array<Int> = arrayOf(Color.parseColor("#009688"), Color.parseColor("#00BCD4"), Color.parseColor("#c62828"), Color.parseColor("#7B1FA2"))
-class RectDownMoverView(ctx : Context) : View(ctx) {
+class RectDownMoverView(ctx : Context, var text : String) : View(ctx) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     override fun onDraw(canvas : Canvas) {
 
@@ -123,6 +123,30 @@ class RectDownMoverView(ctx : Context) : View(ctx) {
             rectDowns.at(state.j)?.update {
                 state.incrementCounter()
                 stopcb(it)
+            }
+        }
+    }
+    data class Renderer(var view : RectDownMoverView, var time : Int = 0) {
+        var rectDownContainer : RectDownContainer ?= null
+        val animator = Animator(view)
+        fun render(canvas : Canvas, paint : Paint) {
+            if(time == 0) {
+                val w = canvas.width.toFloat()
+                val h = canvas.height.toFloat()
+                rectDownContainer = RectDownContainer(view.text, w, h)
+            }
+            canvas.drawColor(Color.parseColor("#212121"))
+            rectDownContainer?.draw(canvas, paint)
+            time++
+            animator.animate {
+                rectDownContainer?.update {
+                    animator.stop()
+                }
+            }
+        }
+        fun handleTap() {
+            rectDownContainer?.startUpdating {
+                animator.start()
             }
         }
     }
