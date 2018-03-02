@@ -107,13 +107,10 @@ class RectDownMoverView(ctx : Context, var text : String) : View(ctx) {
             }
         }
         fun draw(canvas : Canvas, paint : Paint) {
-            var i = 0
-            rectDowns.forEach {
-                it.draw(canvas, paint)
-                i++
-                if(i > state.j) {
-                    return
-                }
+            var i = state.j
+            while(i >= 0) {
+                rectDowns.at(i)?.draw(canvas, paint)
+                i--
             }
         }
         fun startUpdating(startcb : () -> Unit) {
