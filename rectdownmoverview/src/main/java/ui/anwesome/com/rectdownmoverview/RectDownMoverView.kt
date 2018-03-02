@@ -12,13 +12,14 @@ import java.util.concurrent.ConcurrentLinkedQueue
 val colors:Array<Int> = arrayOf(Color.parseColor("#009688"), Color.parseColor("#00BCD4"), Color.parseColor("#c62828"), Color.parseColor("#7B1FA2"))
 class RectDownMoverView(ctx : Context, var text : String) : View(ctx) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val renderer = Renderer(this)
     override fun onDraw(canvas : Canvas) {
-
+        renderer.render(canvas, paint)
     }
     override fun onTouchEvent(event : MotionEvent) : Boolean {
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
-
+                renderer.handleTap()
             }
         }
         return true
