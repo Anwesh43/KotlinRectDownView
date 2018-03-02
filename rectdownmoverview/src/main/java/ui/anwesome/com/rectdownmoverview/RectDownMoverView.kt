@@ -111,7 +111,7 @@ class RectDownMoverView(ctx : Context, var text : String) : View(ctx) {
         fun draw(canvas : Canvas, paint : Paint) {
             var i = state.j
             canvas.save()
-            canvas.translate(w/2, h/5)
+            canvas.translate(w/2, h/40)
             while(i >= 0) {
                 rectDowns.at(i)?.draw(canvas, paint)
                 i--
