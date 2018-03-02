@@ -6,6 +6,7 @@ package ui.anwesome.com.rectdownmoverview
 import android.content.*
 import android.graphics.*
 import android.view.*
+val colors:Array<Int> = arrayOf(Color.parseColor("#009688"), Color.parseColor("#00BCD4"), Color.parseColor("#c62828"), Color.parseColor("#7B1FA2"))
 class RectDownMoverView(ctx : Context) : View(ctx) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     override fun onDraw(canvas : Canvas) {
@@ -28,7 +29,7 @@ class RectDownMoverView(ctx : Context) : View(ctx) {
                 prevScale = scale
             }
         }
-        fun stopUpdating(startcb : () -> Unit) {
+        fun startUpdating(startcb : () -> Unit) {
             if(dir == 0f) {
                 dir = 1 - 2 * scale
                 startcb()
@@ -67,6 +68,27 @@ class RectDownMoverView(ctx : Context) : View(ctx) {
                 j -= dir
                 dir *= -1
             }
+        }
+    }
+    data class RectDown(var i : Int, var text : String, var size: Float) {
+        val state = State()
+        fun draw(canvas : Canvas, paint : Paint) {
+            val y = size * i - size
+            canvas.save()
+            canvas.translate(size/2, size/10 + y + size * state.scale)
+            paint.color = colors[i % colors.size]
+            canvas.drawRect(RectF(-size/2 , - size/2 , size/2, size/2), paint)
+            paint.color = Color.WHITE
+            paint.textSize = size/10
+            val tw = paint.measureText(text)
+            canvas.drawText(text, -tw/2, size/30, paint)
+            canvas.restore()
+        }
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
         }
     }
 }
