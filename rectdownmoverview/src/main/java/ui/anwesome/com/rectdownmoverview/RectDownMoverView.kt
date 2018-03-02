@@ -3,6 +3,7 @@ package ui.anwesome.com.rectdownmoverview
 /**
  * Created by anweshmishra on 02/03/18.
  */
+import android.app.Activity
 import android.content.*
 import android.graphics.*
 import android.view.*
@@ -145,6 +146,13 @@ class RectDownMoverView(ctx : Context, var text : String) : View(ctx) {
             rectDownContainer?.startUpdating {
                 animator.start()
             }
+        }
+    }
+    companion object {
+        fun create(activity : Activity, text : String) : RectDownMoverView {
+            val view = RectDownMoverView(activity, text)
+            activity.setContentView(view)
+            return view
         }
     }
 }
